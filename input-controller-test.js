@@ -13,6 +13,8 @@ const controller = new InputController({
     }
 })
 controller.attach(window)
+controller.attach(window)
+controller.enable = true
 // console.log(controller.isActionActive('left'))
 // console.log(controller.disableAction('left'))
 // console.log(controller.isActionActive('left'))

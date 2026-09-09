@@ -45,12 +45,18 @@
         }
 
         keyDownHandler(event) {
+            if (!this.enable) {
+                return
+            }
             this.pressedKey.add(event.keyCode)
             this.checkState()
         }
 
         keyUpHandler(event) {
             this.pressedKey.delete(event.keyCode)
+            if (!this.enable) {
+                return
+            }
             this.checkState()
         }
 
@@ -96,6 +102,10 @@
         detach() {
             this.target.removeEventListener("keydown", this.keyDownHandler)
             this.target.removeEventListener("keyup", this.keyUpHandler)
+            this.pressedKey.clear()
+            for (const actionName in this.actions) {
+                this.actions[actionName].active = false
+            }
         }
     }
     window.InputController = InputController

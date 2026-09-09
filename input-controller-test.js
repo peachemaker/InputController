@@ -7,12 +7,19 @@ const controller = new InputController({
         keys: [39, 68]
     }
 })
-console.log(controller.isActionActive('left'))
-console.log(controller.disableAction('left'))
-console.log(controller.isActionActive('left'))
+// console.log(controller.isActionActive('left'))
+// console.log(controller.disableAction('left'))
+// console.log(controller.isActionActive('left'))
 console.log(controller.enableAction('left'))
-console.log(controller.isActionActive('left'))
-controller.pressedKey.add(65)
-console.log(controller.isActionActive('left'))
-console.log(controller)
-console.log(controller.actions)
+// console.log(controller.isActionActive('left'))
+// controller.pressedKey.add(65)
+// console.log(controller.isActionActive('left'))
+// console.log(controller)
+// console.log(controller.actions)
+
+setInterval(() => {
+    console.log({
+        left: controller.isActionActive("left"),
+        right: controller.isActionActive("right")
+    })
+}, 1000)

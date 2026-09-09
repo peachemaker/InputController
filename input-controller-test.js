@@ -23,9 +23,21 @@ console.log(controller.enableAction('left'))
 // console.log(controller)
 // console.log(controller.actions)
 
-setInterval(() => {
-    console.log(
-        controller.isKeyPressed(65),
-        controller.isKeyPressed(68),
-    )
-}, 1000)
+// setInterval(() => {
+//     console.log({
+//         left: controller.isActionActive("left"),
+//         right: controller.isActionActive("right"),
+// })
+// }, 1000)
+window.addEventListener(controller.ACTION_ACTIVATED, (event) => {
+    console.log("событие", event.type)
+    console.log("действие", event.detail.action)
+}
+)
+
+window.addEventListener(controller.ACTION_DEACTIVATED, (event) => {
+    console.log("событие", event.type)
+    console.log("действие", event.detail.action)
+}
+)
+// console.log(controller.actions)

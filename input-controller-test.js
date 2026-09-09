@@ -43,6 +43,15 @@ window.addEventListener(controller.ACTION_DEACTIVATED, (event) => {
 }
 )
 
+window.addEventListener("blur", (event) => {
+    console.log("blur")
+}
+)
+
+window.addEventListener("focus", (event) => {
+    console.log("focus")
+}
+)
 // const game = document.createElement("div")
 // controller.attach(game)
 // console.log(controller.target === game)

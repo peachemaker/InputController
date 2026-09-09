@@ -5,9 +5,12 @@
             this.pressedKey = new Set()
             this.target = target
             this.enable = true
+            this.focused = true
             this.bindActions(actionsToBind)
             this.keyDownHandler = this.keyDownHandler.bind(this)
             this.keyUpHandler = this.keyUpHandler.bind(this)
+            this.focusHandler = this.focusHandler.bind(this)
+            this.blurHandler = this.blurHandler.bind(this)
             this.ACTION_ACTIVATED = "input-controller:action-activated"
             this.ACTION_DEACTIVATED = "input-controller:action-deactivated"
         }
@@ -45,7 +48,7 @@
         }
 
         keyDownHandler(event) {
-            if (!this.enable) {
+            if (!this.enable || !this.focused) {
                 return
             }
             this.pressedKey.add(event.keyCode)
@@ -58,6 +61,18 @@
                 return
             }
             this.checkState()
+        }
+
+        focusHandler() {
+            this.focused = true
+        }
+
+        blurHandler() {
+            this.focused = false
+            this.pressedKey.clear()
+            for (const actionName in this.actions) {
+                this.actions[actionName].active = false
+            }
         }
 
         isKeyPressed(keyCode) {
@@ -94,6 +109,8 @@
             this.target = target
             this.target.addEventListener("keydown", this.keyDownHandler)
             this.target.addEventListener("keyup", this.keyUpHandler)
+            window.addEventListener("focus", this.focusHandler)
+            window.addEventListener("blur", this.blurHandler)
             if (!dontEnable) {
                 this.enable = true
             }
@@ -102,6 +119,8 @@
         detach() {
             this.target.removeEventListener("keydown", this.keyDownHandler)
             this.target.removeEventListener("keyup", this.keyUpHandler)
+            window.removeEventListener("focus", this.focusHandler)
+            window.removeEventListener("blur", this.blurHandler)
             this.pressedKey.clear()
             for (const actionName in this.actions) {
                 this.actions[actionName].active = false

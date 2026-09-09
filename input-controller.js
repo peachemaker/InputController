@@ -44,13 +44,18 @@
             return action.keys.some(key => this.pressedKey.has(key));
         }
 
-        keyDownHandler(event){
+        keyDownHandler(event) {
             this.pressedKey.add(event.keyCode)
+            console.log("keydown", event.keyCode)
         }
 
-        keyUpHandler(event){
+        keyUpHandler(event) {
             this.pressedKey.delete(event.keyCode)
-            console.log("keyup", event.keyCode)
+            console.log("keydown", event.keyCode)
+        }
+
+        isKeyPressed(keyCode) {
+            return this.pressedKey.has(keyCode)
         }
     }
     window.InputController = InputController

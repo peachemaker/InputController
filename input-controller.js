@@ -155,22 +155,33 @@
             this.keyDownHandler = this.keyDownHandler.bind(this)
             this.keyUpHandler = this.keyUpHandler.bind(this)
         }
+
         attach(target) {
             this.target = target
             this.target.addEventListener("keydown", this.keyDownHandler)
             this.target.addEventListener("keyup", this.keyUpHandler)
         }
-        detach(){
+
+        detach() {
             this.target.removeEventListener("keydown", this.keyDownHandler)
             this.target.removeEventListener("keyup", this.keyUpHandler)
         }
-        keyDownHandler() {
 
+        keyDownHandler(event) {
+            this.pressedKey.add(event.keyCode)
+            console.log("нажата:" + event.keyCode)
         }
-        keyUpHandler() {
 
+        keyUpHandler(event) {
+            this.pressedKey.delete(event.keyCode)
+            console.log("отпущена:" + event.keyCode)
+        }
+
+        isKeyPressed(keyCode) {
+            return this.pressedKey.has(keyCode)
         }
 
     }
+    window.KeyboardPlug = KeyboardPlug
     window.InputController = InputController
 })();

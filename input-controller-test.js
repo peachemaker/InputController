@@ -69,4 +69,5 @@ window.addEventListener("focus", (event) => {
     console.log("focus")
 }
 )
-
+const keyboard = new KeyboardPlug(window)
+keyboard.attach(window)

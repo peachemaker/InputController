@@ -71,3 +71,6 @@ window.addEventListener("focus", (event) => {
 )
 const keyboard = new KeyboardPlug(window)
 keyboard.attach(window)
+const action = {
+    keys: [37, 65]
+}

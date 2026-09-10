@@ -4,16 +4,17 @@ const controller = new InputController({
     },
     right: {
         keys: [39, 68]
-    },
-    up: {
-        keys: [87, 38]
-    },
-    down: {
-        keys: [83, 40]
-    },
+    }
 })
 const player = document.getElementById("player");
+const leftEnableButton = document.getElementById("enable-left")
+const leftDisableButton = document.getElementById("disable-left")
+const attachButton = document.getElementById("attach")
+const detachButton = document.getElementById("detach")
+
+
 controller.attach(window)
+
 controller.bindActions({
     jump: {
         keys: [32]
@@ -39,10 +40,14 @@ controller.target.addEventListener(controller.ACTION_DEACTIVATED, (event) => {
         player.style.background = "green"
     }
 })
+
+leftEnableButton.addEventListener("click", () => controller.enableAction("left"))
+leftDisableButton.addEventListener("click", () => controller.disableAction("left"))
+attachButton.addEventListener("click", () => controller.attach(window))
+detachButton.addEventListener("click", () => controller.detach())
 // console.log(controller.isActionActive('left'))
 // console.log(controller.disableAction('left'))
 // console.log(controller.isActionActive('left'))
-console.log(controller.enableAction('left'))
 // console.log(controller.isActionActive('left'))
 // controller.pressedKey.add(65)
 // console.log(controller.isActionActive('left'))

@@ -56,7 +56,17 @@
             if (!action || !action.enabled) {
                 return false;
             }
-            return this.plugins.keyboard.isActionActive(action)
+            for (const plugin of Object.keys(this.plugins)) {
+                if (plugin.supportAction(action)){
+                    return plugin.keyboard.isActionActive(action)
+                }
+                else {
+                    return false
+                }
+            }
+            // if (action.keyboard) {
+            //     return this.plugins.keyboard.isActionActive(action)
+            // }
         }
 
         // устанавливает значение true когда окно в фокусе
@@ -165,6 +175,10 @@
         isActionActive(action) {
             const keys = action.keyboard.keys;
             return keys.some(key => this.isKeyPressed(key));
+        }
+
+        supportAction(action) {
+            return action.keyboard !== undefined
         }
 
     }

@@ -2,16 +2,15 @@
     class InputController {
         constructor(actionsToBind = {}, target = window) {
             this.actions = {}
-            // this.pressedKey = new Set()
             this.target = target
             this.enable = true
             this.focused = true
             this.bindActions(actionsToBind)
-            // this.keyDownHandler = this.keyDownHandler.bind(this)
-            // this.keyUpHandler = this.keyUpHandler.bind(this)
             this.focusHandler = this.focusHandler.bind(this)
             this.blurHandler = this.blurHandler.bind(this)
-            this.keyboardPlug = new KeyboardPlug(target)
+            this.plugins = {
+                keyboard: new KeyboardPlug(target),
+            }
             this.ACTION_ACTIVATED = "input-controller:action-activated"
             this.ACTION_DEACTIVATED = "input-controller:action-deactivated"
         }
@@ -24,12 +23,12 @@
                 for (const key of keys) {
                     for (const existActionName in this.actions) {
                         const existAction = this.actions[existActionName]
-                        existAction.keys = existAction.keys.filter(oldkey => oldkey !== key)
+                        existAction.keyboard.keys = existAction.keyboard.keys.filter(oldkey => oldkey !== key)
                     }
 
                 }
                 this.actions[actionName] = {
-                    keys: keys,
+                    keyboard: { keys: keys },
                     enabled: action.enabled ?? true,
                     active: false
                 };
@@ -57,25 +56,8 @@
             if (!action || !action.enabled) {
                 return false;
             }
-            return this.keyboardPlug.isActionActive(action)
+            return this.plugins.keyboard.isActionActive(action)
         }
-
-        // // обработчики нажатия клавиш
-        // keyDownHandler(event) {
-        //     if (!this.enable || !this.focused) {
-        //         return
-        //     }
-        //     this.pressedKey.add(event.keyCode)
-        //     this.checkState()
-        // }
-
-        // keyUpHandler(event) {
-        //     this.pressedKey.delete(event.keyCode)
-        //     if (!this.enable) {
-        //         return
-        //     }
-        //     this.checkState()
-        // }
 
         // устанавливает значение true когда окно в фокусе
         focusHandler() {
@@ -85,7 +67,7 @@
         // устанавливает значение false когда окно не в фокусе, очищает нажатые клавиши
         blurHandler() {
             this.focused = false
-            this.keyboardPlug.pressedKey.clear()
+            this.plugins.keyboard.pressedKey.clear()
             for (const actionName in this.actions) {
                 this.actions[actionName].active = false
             }
@@ -93,7 +75,7 @@
 
         // проверяет нажата ли переданная кнопка
         isKeyPressed(keyCode) {
-            return this.keyboardPlug.pressedKey.has(keyCode)
+            return this.plugins.keyboard.pressedKey.has(keyCode)
         }
 
         // проверяет изменилось ли состояние действия
@@ -126,7 +108,7 @@
         // Нацеливает контроллер на переданный DOM-элемент
         attach(target, dontEnable = false) {
             this.target = target
-            this.keyboardPlug.attach(target)
+            this.plugins.keyboard.attach(target)
             window.addEventListener("focus", this.focusHandler)
             window.addEventListener("blur", this.blurHandler)
             if (!dontEnable) {
@@ -136,10 +118,10 @@
 
         // Отцепляет контроллер от активного DOM-элемента и деактивирует контроллер
         detach() {
-            this.keyboardPlug.detach()
+            this.plugins.keyboard.detach()
             window.removeEventListener("focus", this.focusHandler)
             window.removeEventListener("blur", this.blurHandler)
-            this.keyboardPlug.pressedKey.clear()
+            this.plugins.keyboard.pressedKey.clear()
             for (const actionName in this.actions) {
                 this.actions[actionName].active = false
             }
@@ -181,14 +163,7 @@
         }
 
         isActionActive(action) {
-            // const action = controller.actions[actionName];
-            // if (!action || !action.enabled) {
-            //     return false;
-            // }
-            const keys = action.keys;
-            // console.log(keys)
-            // console.log(action)
-            // console.log(Array.isArray(keys))
+            const keys = action.keyboard.keys;
             return keys.some(key => this.isKeyPressed(key));
         }
 

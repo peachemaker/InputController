@@ -95,7 +95,7 @@
             return this.pressedKey.has(keyCode)
         }
 
-         // проверяет изменилось ли состояние действия
+        // проверяет изменилось ли состояние действия
         checkState() {
             for (const actionName in this.actions) {
                 const action = this.actions[actionName]
@@ -121,7 +121,7 @@
                 }
             }
         }
-        
+
         // Нацеливает контроллер на переданный DOM-элемент
         attach(target, dontEnable = false) {
             this.target = target
@@ -145,6 +145,32 @@
                 this.actions[actionName].active = false
             }
         }
+    }
+
+    // плагин для клавиатуры
+    class KeyboardPlug {
+        constructor(target) {
+            this.target = target
+            this.pressedKey = new Set()
+            this.keyDownHandler = this.keyDownHandler.bind(this)
+            this.keyUpHandler = this.keyUpHandler.bind(this)
+        }
+        attach(target) {
+            this.target = target
+            this.target.addEventListener("keydown", this.keyDownHandler)
+            this.target.addEventListener("keyup", this.keyUpHandler)
+        }
+        detach(){
+            this.target.removeEventListener("keydown", this.keyDownHandler)
+            this.target.removeEventListener("keyup", this.keyUpHandler)
+        }
+        keyDownHandler() {
+
+        }
+        keyUpHandler() {
+
+        }
+
     }
     window.InputController = InputController
 })();

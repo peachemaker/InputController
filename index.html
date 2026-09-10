@@ -21,7 +21,15 @@
         <button id="attach">Включить обработчики</button>
         <button id="detach">Выключить обработчики</button>
     </div>
-        <div id="player"></div>
+    <div id="player"></div>
+    <div id="status">
+        <div>Двигается влево: <span id="statusLeft">false</span></div>
+        <div>Двигается вправо: <span id="statusRight">false</span></div>
+        <div>Нажата стрелка влево: <span id="arrowLeft">false</span></div>
+        <div>Нажата стрелка вправо: <span id="arrowRight">false</span></div>
+        <div>Нажата A: <span id="pressedA">false</span></div>
+        <div>Нажата D: <span id="pressedD">false</span></div>
+    </div>
     <script src="input-controller.js"></script>
     <script src="input-controller-test.js"></script>
 </body>

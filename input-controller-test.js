@@ -11,6 +11,12 @@ const leftEnableButton = document.getElementById("enable-left")
 const leftDisableButton = document.getElementById("disable-left")
 const attachButton = document.getElementById("attach")
 const detachButton = document.getElementById("detach")
+const statusLeft = document.getElementById("statusLeft")
+const statusRight = document.getElementById("statusRight")
+const arrowLeft = document.getElementById("arrowLeft")
+const arrowRight = document.getElementById("arrowRight")
+const pressedA = document.getElementById("pressedA")
+const pressedD = document.getElementById("pressedD")
 
 
 controller.attach(window)
@@ -29,6 +35,12 @@ setInterval(() => {
         playerX += 5
     }
     player.style.left = `${playerX}px`
+    statusLeft.textContent = controller.isActionActive("left")
+    statusRight.textContent = controller.isActionActive("right")
+    arrowLeft.textContent = controller.isKeyPressed(37)
+    arrowRight.textContent = controller.isKeyPressed(39)
+    pressedA.textContent = controller.isKeyPressed(65)
+    pressedD.textContent = controller.isKeyPressed(68)
 }, 16)
 controller.target.addEventListener(controller.ACTION_ACTIVATED, (event) => {
     if (event.detail.action === "jump") {
@@ -45,6 +57,7 @@ leftEnableButton.addEventListener("click", () => controller.enableAction("left")
 leftDisableButton.addEventListener("click", () => controller.disableAction("left"))
 attachButton.addEventListener("click", () => controller.attach(window))
 detachButton.addEventListener("click", () => controller.detach())
+
 // console.log(controller.isActionActive('left'))
 // console.log(controller.disableAction('left'))
 // console.log(controller.isActionActive('left'))

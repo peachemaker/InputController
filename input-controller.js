@@ -15,6 +15,7 @@
             this.ACTION_DEACTIVATED = "input-controller:action-deactivated"
         }
 
+        // добавление действий
         bindActions(actionsToBind) {
             for (const actionName in actionsToBind) {
                 const action = actionsToBind[actionName]
@@ -34,12 +35,14 @@
             }
         }
 
+        // включить объявленную активность
         enableAction(actionName) {
             if (this.actions[actionName]) {
                 this.actions[actionName].enabled = true;
             }
         }
 
+        // отключить объявленную активность
         disableAction(actionName) {
             if (this.actions[actionName]) {
                 this.actions[actionName].enabled = false;
@@ -47,6 +50,7 @@
             }
         }
 
+        // проверяет активирована ли переданная активность
         isActionActive(actionName) {
             const action = this.actions[actionName];
             if (!action || !action.enabled) {
@@ -55,6 +59,7 @@
             return action.keys.some(key => this.pressedKey.has(key));
         }
 
+        // обработчики нажатия клавиш
         keyDownHandler(event) {
             if (!this.enable || !this.focused) {
                 return
@@ -71,10 +76,12 @@
             this.checkState()
         }
 
+        // устанавливает значение true когда окно в фокусе
         focusHandler() {
             this.focused = true
         }
 
+        // устанавливает значение false когда окно не в фокусе, очищает нажатые клавиши
         blurHandler() {
             this.focused = false
             this.pressedKey.clear()
@@ -83,10 +90,12 @@
             }
         }
 
+        // проверяет нажата ли переданная кнопка
         isKeyPressed(keyCode) {
             return this.pressedKey.has(keyCode)
         }
 
+         // проверяет изменилось ли состояние действия
         checkState() {
             for (const actionName in this.actions) {
                 const action = this.actions[actionName]
@@ -112,7 +121,8 @@
                 }
             }
         }
-
+        
+        // Нацеливает контроллер на переданный DOM-элемент
         attach(target, dontEnable = false) {
             this.target = target
             this.target.addEventListener("keydown", this.keyDownHandler)
@@ -124,6 +134,7 @@
             }
         }
 
+        // Отцепляет контроллер от активного DOM-элемента и деактивирует контроллер
         detach() {
             this.target.removeEventListener("keydown", this.keyDownHandler)
             this.target.removeEventListener("keyup", this.keyUpHandler)

@@ -1,6 +1,6 @@
 const controller = new InputController({
     left: {
-        keys: [37, 65, 37],
+        keys: [37, 65]
     },
     right: {
         keys: [39, 68]
@@ -17,15 +17,17 @@ const arrowLeft = document.getElementById("arrowLeft")
 const arrowRight = document.getElementById("arrowRight")
 const pressedA = document.getElementById("pressedA")
 const pressedD = document.getElementById("pressedD")
+const addJumpButton = document.getElementById("addJump")
 
-
+addJumpButton.addEventListener("click", () => {
+    controller.bindActions({
+        jump: {
+            keys: [32]
+        }
+    })
+})
 controller.attach(window)
 
-controller.bindActions({
-    jump: {
-        keys: [32]
-    }
-})
 let playerX = 280
 setInterval(() => {
     if (controller.isActionActive("left")) {
@@ -58,45 +60,13 @@ leftDisableButton.addEventListener("click", () => controller.disableAction("left
 attachButton.addEventListener("click", () => controller.attach(window))
 detachButton.addEventListener("click", () => controller.detach())
 
-// console.log(controller.isActionActive('left'))
-// console.log(controller.disableAction('left'))
-// console.log(controller.isActionActive('left'))
-// console.log(controller.isActionActive('left'))
-// controller.pressedKey.add(65)
-// console.log(controller.isActionActive('left'))
-// console.log(controller)
-// console.log(controller.actions)
+window.addEventListener("blur", (event) => {
+    console.log("blur")
+}
+)
 
-setInterval(() => {
-    console.log({
-        left: controller.isActionActive("left"),
-        right: controller.isActionActive("right"),
-    })
-}, 1000)
-// window.addEventListener(controller.ACTION_ACTIVATED, (event) => {
-//     console.log("событие", event.type)
-//     console.log("действие", event.detail.action)
-// }
-// )
+window.addEventListener("focus", (event) => {
+    console.log("focus")
+}
+)
 
-// window.addEventListener(controller.ACTION_DEACTIVATED, (event) => {
-//     console.log("событие", event.type)
-//     console.log("действие", event.detail.action)
-// }
-// )
-
-// window.addEventListener("blur", (event) => {
-//     console.log("blur")
-// }
-// )
-
-// window.addEventListener("focus", (event) => {
-//     console.log("focus")
-// }
-// )
-
-
-// // const game = document.createElement("div")
-// // controller.attach(game)
-// // console.log(controller.target === game)
-// console.log(controller.actions)

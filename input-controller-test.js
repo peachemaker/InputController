@@ -10,7 +10,7 @@ const controller = new InputController({
     },
     down: {
         keys: [83, 40]
-    }
+    }, 
 })
 controller.attach(window)
 controller.attach(window)
@@ -25,34 +25,40 @@ controller.enable = true
 // console.log(controller)
 // console.log(controller.actions)
 
-setInterval(() => {
-    console.log({
-        left: controller.isActionActive("left"),
-        right: controller.isActionActive("right"),
-    })
-}, 1000)
-window.addEventListener(controller.ACTION_ACTIVATED, (event) => {
-    console.log("событие", event.type)
-    console.log("действие", event.detail.action)
-}
-)
+// setInterval(() => {
+//     console.log({
+//         left: controller.isActionActive("left"),
+//         right: controller.isActionActive("right"),
+//     })
+// }, 1000)
+// window.addEventListener(controller.ACTION_ACTIVATED, (event) => {
+//     console.log("событие", event.type)
+//     console.log("действие", event.detail.action)
+// }
+// )
 
-window.addEventListener(controller.ACTION_DEACTIVATED, (event) => {
-    console.log("событие", event.type)
-    console.log("действие", event.detail.action)
-}
-)
+// window.addEventListener(controller.ACTION_DEACTIVATED, (event) => {
+//     console.log("событие", event.type)
+//     console.log("действие", event.detail.action)
+// }
+// )
 
-window.addEventListener("blur", (event) => {
-    console.log("blur")
-}
-)
+// window.addEventListener("blur", (event) => {
+//     console.log("blur")
+// }
+// )
 
-window.addEventListener("focus", (event) => {
-    console.log("focus")
-}
-)
-// const game = document.createElement("div")
-// controller.attach(game)
-// console.log(controller.target === game)
+// window.addEventListener("focus", (event) => {
+//     console.log("focus")
+// }
+// )
+
+controller.bindActions({
+    jump: {
+        keys: [65, 68]
+    }
+})
+// // const game = document.createElement("div")
+// // controller.attach(game)
+// // console.log(controller.target === game)
 // console.log(controller.actions)

@@ -19,13 +19,12 @@
             for (const actionName in actionsToBind) {
                 const action = actionsToBind[actionName]
                 const keys = [...new Set(action.keys)];
-                for (const key of keys){
-                    for (const existActionName in this.actions){
+                for (const key of keys) {
+                    for (const existActionName in this.actions) {
                         const existAction = this.actions[existActionName]
-                        console.log(existActionName, existAction.keys)
                         existAction.keys = existAction.keys.filter(oldkey => oldkey !== key)
                     }
-                    
+
                 }
                 this.actions[actionName] = {
                     keys: keys,
@@ -44,6 +43,7 @@
         disableAction(actionName) {
             if (this.actions[actionName]) {
                 this.actions[actionName].enabled = false;
+                this.actions[actionName].active = false
             }
         }
 

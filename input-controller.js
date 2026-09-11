@@ -9,7 +9,7 @@
             this.focusHandler = this.focusHandler.bind(this)
             this.blurHandler = this.blurHandler.bind(this)
             this.plugins = {
-                keyboard: new KeyboardPlug(target),
+                keyboard: new KeyboardPlug(target, () => this.checkState()),
             }
             this.ACTION_ACTIVATED = "input-controller:action-activated"
             this.ACTION_DEACTIVATED = "input-controller:action-deactivated"
@@ -19,13 +19,12 @@
         bindActions(actionsToBind) {
             for (const actionName in actionsToBind) {
                 const action = actionsToBind[actionName]
-                const keys = [...new Set(action.keys)];
+                const keys = [...new Set(action.keyboard.keys)];
                 for (const key of keys) {
                     for (const existActionName in this.actions) {
                         const existAction = this.actions[existActionName]
                         existAction.keyboard.keys = existAction.keyboard.keys.filter(oldkey => oldkey !== key)
                     }
-
                 }
                 this.actions[actionName] = {
                     keyboard: { keys: keys },
@@ -33,6 +32,7 @@
                     active: false
                 };
             }
+            console.log(this.actions)
         }
 
         // включить объявленную активность
@@ -56,17 +56,12 @@
             if (!action || !action.enabled) {
                 return false;
             }
-            for (const plugin of Object.keys(this.plugins)) {
-                if (plugin.supportAction(action)){
-                    return plugin.keyboard.isActionActive(action)
-                }
-                else {
-                    return false
+            for (const plugin in this.plugins) {
+                if (this.plugins[plugin].supportAction(action)) {
+                    return this.plugins[plugin].isActionActive(action)
                 }
             }
-            // if (action.keyboard) {
-            //     return this.plugins.keyboard.isActionActive(action)
-            // }
+            return false
         }
 
         // устанавливает значение true когда окно в фокусе
@@ -101,7 +96,7 @@
                                 action: actionName
                             }
                         })
-                        window.dispatchEvent(event)
+                        this.target.dispatchEvent(event)
                     }
                     else {
                         const event = new CustomEvent(this.ACTION_DEACTIVATED, {
@@ -109,7 +104,7 @@
                                 action: actionName
                             }
                         })
-                        window.dispatchEvent(event)
+                        this.target.dispatchEvent(event)
                     }
                 }
             }
@@ -140,11 +135,12 @@
 
     // плагин для клавиатуры
     class KeyboardPlug {
-        constructor(target) {
+        constructor(target, changeOnInput) {
             this.target = target
             this.pressedKey = new Set()
             this.keyDownHandler = this.keyDownHandler.bind(this)
             this.keyUpHandler = this.keyUpHandler.bind(this)
+            this.changeOnInput = changeOnInput
         }
 
         attach(target) {
@@ -160,11 +156,13 @@
 
         keyDownHandler(event) {
             this.pressedKey.add(event.keyCode)
+            this.changeOnInput()
             console.log("нажата:" + event.keyCode)
         }
 
         keyUpHandler(event) {
             this.pressedKey.delete(event.keyCode)
+            this.changeOnInput()
             console.log("отпущена:" + event.keyCode)
         }
 

@@ -1,9 +1,13 @@
 const controller = new InputController({
     left: {
-        keys: [37, 65]
+        keyboard: {
+            keys: [37, 65]
+        }
     },
     right: {
-        keys: [39, 68]
+        keyboard: {
+            keys: [39, 68]
+        }
     }
 })
 const player = document.getElementById("player");
@@ -22,7 +26,9 @@ const addJumpButton = document.getElementById("addJump")
 addJumpButton.addEventListener("click", () => {
     controller.bindActions({
         jump: {
-            keys: [32]
+            keyboard: {
+                keys: [32]
+            }
         }
     })
 })
@@ -45,7 +51,9 @@ setInterval(() => {
     pressedD.textContent = controller.isKeyPressed(68)
 }, 16)
 controller.target.addEventListener(controller.ACTION_ACTIVATED, (event) => {
+    console.log("jump")
     if (event.detail.action === "jump") {
+        
         player.style.background = "red"
     }
 })
@@ -64,13 +72,14 @@ window.addEventListener("blur", (event) => {
     console.log("blur")
 }
 )
-
 window.addEventListener("focus", (event) => {
     console.log("focus")
 }
 )
-const keyboard = new KeyboardPlug(window)
-keyboard.attach(window)
-const action = {
-    keys: [37, 65]
-}
+// const keyboard = new KeyboardPlug(window)
+// keyboard.attach(window)
+// const action = {
+//     keyboard: {
+//         keys: [37, 65]
+//     }
+// }

@@ -22,6 +22,7 @@ const arrowRight = document.getElementById("arrowRight")
 const pressedA = document.getElementById("pressedA")
 const pressedD = document.getElementById("pressedD")
 const addJumpButton = document.getElementById("addJump")
+const turnOffContButton = document.getElementById("turnoffcont")
 
 addJumpButton.addEventListener("click", () => {
     controller.bindActions({
@@ -33,7 +34,6 @@ addJumpButton.addEventListener("click", () => {
     })
 })
 controller.attach(window)
-
 let playerX = 280
 setInterval(() => {
     if (controller.isActionActive("left")) {
@@ -53,7 +53,7 @@ setInterval(() => {
 controller.target.addEventListener(controller.ACTION_ACTIVATED, (event) => {
     console.log("jump")
     if (event.detail.action === "jump") {
-        
+
         player.style.background = "red"
     }
 })
@@ -67,6 +67,16 @@ leftEnableButton.addEventListener("click", () => controller.enableAction("left")
 leftDisableButton.addEventListener("click", () => controller.disableAction("left"))
 attachButton.addEventListener("click", () => controller.attach(window))
 detachButton.addEventListener("click", () => controller.detach())
+turnOffContButton.addEventListener("click", () => {
+    if (controller.enabled === false){
+        turnOffContButton.textContent = "Выключить клавиатуру"
+    }
+    else {
+        turnOffContButton.textContent = "Включить клавиатуру"
+    }
+    controller.enabled = !controller.enabled
+    console.log("turn off")
+})
 
 window.addEventListener("blur", (event) => {
     console.log("blur")
@@ -76,10 +86,3 @@ window.addEventListener("focus", (event) => {
     console.log("focus")
 }
 )
-// const keyboard = new KeyboardPlug(window)
-// keyboard.attach(window)
-// const action = {
-//     keyboard: {
-//         keys: [37, 65]
-//     }
-// }

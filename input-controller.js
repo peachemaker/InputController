@@ -3,13 +3,17 @@
         constructor(actionsToBind = {}, target = window) {
             this.actions = {}
             this.target = target
-            this.enable = true
+            this.enabled = true
             this.focused = true
             this.bindActions(actionsToBind)
             this.focusHandler = this.focusHandler.bind(this)
             this.blurHandler = this.blurHandler.bind(this)
             this.plugins = {
-                keyboard: new KeyboardPlug(target, () => this.checkState()),
+                keyboard: new KeyboardPlug(target, () => {
+                    if (this.enabled) {
+                        this.checkState()
+                    }
+                })
             }
             this.ACTION_ACTIVATED = "input-controller:action-activated"
             this.ACTION_DEACTIVATED = "input-controller:action-deactivated"
@@ -51,9 +55,9 @@
         }
 
         // проверяет активирована ли переданная активность
-        isActionActive(actionName) {
+        isActionActive(actionName) { 
             const action = this.actions[actionName];
-            if (!action || !action.enabled) {
+            if (!action || !action.enabled || !this.enabled) {
                 return false;
             }
             for (const plugin in this.plugins) {
@@ -72,7 +76,7 @@
         // устанавливает значение false когда окно не в фокусе, очищает нажатые клавиши
         blurHandler() {
             this.focused = false
-            this.plugins.keyboard.pressedKey.clear()
+            this.plugins.keyboard.clear()
             for (const actionName in this.actions) {
                 this.actions[actionName].active = false
             }
@@ -80,7 +84,7 @@
 
         // проверяет нажата ли переданная кнопка
         isKeyPressed(keyCode) {
-            return this.plugins.keyboard.pressedKey.has(keyCode)
+            return this.plugins.keyboard.isKeyPressed(keyCode)
         }
 
         // проверяет изменилось ли состояние действия
@@ -113,20 +117,24 @@
         // Нацеливает контроллер на переданный DOM-элемент
         attach(target, dontEnable = false) {
             this.target = target
-            this.plugins.keyboard.attach(target)
+            for (const plugin in this.plugins) {
+                this.plugins[plugin].attach(target)
+            }
             window.addEventListener("focus", this.focusHandler)
             window.addEventListener("blur", this.blurHandler)
             if (!dontEnable) {
-                this.enable = true
+                this.enabled = true
             }
         }
 
         // Отцепляет контроллер от активного DOM-элемента и деактивирует контроллер
         detach() {
-            this.plugins.keyboard.detach()
+            for (const plugin in this.plugins) {
+                this.plugins[plugin].detach()
+            }
             window.removeEventListener("focus", this.focusHandler)
             window.removeEventListener("blur", this.blurHandler)
-            this.plugins.keyboard.pressedKey.clear()
+            this.plugins.keyboard.clear()
             for (const actionName in this.actions) {
                 this.actions[actionName].active = false
             }
@@ -179,6 +187,9 @@
             return action.keyboard !== undefined
         }
 
+        clear() {
+            this.pressedKey.clear()
+        }
     }
     window.KeyboardPlug = KeyboardPlug
     window.InputController = InputController

@@ -55,7 +55,7 @@
         }
 
         // проверяет активирована ли переданная активность
-        isActionActive(actionName) { 
+        isActionActive(actionName) {
             const action = this.actions[actionName];
             if (!action || !action.enabled || !this.enabled) {
                 return false;
@@ -76,7 +76,9 @@
         // устанавливает значение false когда окно не в фокусе, очищает нажатые клавиши
         blurHandler() {
             this.focused = false
-            this.plugins.keyboard.clear()
+            for (const plugin in this.plugins) {
+                this.plugins[plugin].clear()
+            }
             for (const actionName in this.actions) {
                 this.actions[actionName].active = false
             }
@@ -84,7 +86,9 @@
 
         // проверяет нажата ли переданная кнопка
         isKeyPressed(keyCode) {
-            return this.plugins.keyboard.isKeyPressed(keyCode)
+            for (const plugin in this.plugins) {
+                return this.plugins[plugin].isKeyPressed(keyCode)
+            }
         }
 
         // проверяет изменилось ли состояние действия
@@ -131,10 +135,10 @@
         detach() {
             for (const plugin in this.plugins) {
                 this.plugins[plugin].detach()
+                this.plugins[plugin].clear()
             }
             window.removeEventListener("focus", this.focusHandler)
             window.removeEventListener("blur", this.blurHandler)
-            this.plugins.keyboard.clear()
             for (const actionName in this.actions) {
                 this.actions[actionName].active = false
             }

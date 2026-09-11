@@ -51,9 +51,7 @@ setInterval(() => {
     pressedD.textContent = controller.isKeyPressed(68)
 }, 16)
 controller.target.addEventListener(controller.ACTION_ACTIVATED, (event) => {
-    console.log("jump")
     if (event.detail.action === "jump") {
-
         player.style.background = "red"
     }
 })
@@ -68,7 +66,7 @@ leftDisableButton.addEventListener("click", () => controller.disableAction("left
 attachButton.addEventListener("click", () => controller.attach(window))
 detachButton.addEventListener("click", () => controller.detach())
 turnOffContButton.addEventListener("click", () => {
-    if (controller.enabled === false){
+    if (controller.enabled === false) {
         turnOffContButton.textContent = "Выключить клавиатуру"
     }
     else {

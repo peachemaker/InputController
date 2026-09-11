@@ -1,13 +1,9 @@
 const controller = new InputController({
     left: {
-        keyboard: {
-            keys: [37, 65]
-        }
+        keys: [37, 65]
     },
     right: {
-        keyboard: {
-            keys: [39, 68]
-        }
+        keys: [39, 68]
     }
 })
 const player = document.getElementById("player");
@@ -27,9 +23,7 @@ const turnOffContButton = document.getElementById("turnoffcont")
 addJumpButton.addEventListener("click", () => {
     controller.bindActions({
         jump: {
-            keyboard: {
-                keys: [32]
-            }
+            keys: [32]
         }
     })
 })
@@ -63,7 +57,10 @@ controller.target.addEventListener(controller.ACTION_DEACTIVATED, (event) => {
 
 leftEnableButton.addEventListener("click", () => controller.enableAction("left"))
 leftDisableButton.addEventListener("click", () => controller.disableAction("left"))
-attachButton.addEventListener("click", () => controller.attach(window))
+attachButton.addEventListener("click", () => {
+    controller.attach(window)
+    turnOffContButton.textContent = "Выключить клавиатуру"
+})
 detachButton.addEventListener("click", () => controller.detach())
 turnOffContButton.addEventListener("click", () => {
     if (controller.enabled === false) {
@@ -73,7 +70,6 @@ turnOffContButton.addEventListener("click", () => {
         turnOffContButton.textContent = "Включить клавиатуру"
     }
     controller.enabled = !controller.enabled
-    console.log("turn off")
 })
 
 window.addEventListener("blur", (event) => {

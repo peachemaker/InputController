@@ -23,20 +23,15 @@
         bindActions(actionsToBind) {
             for (const actionName in actionsToBind) {
                 const action = actionsToBind[actionName]
-                const keys = [...new Set(action.keyboard.keys)];
-                for (const key of keys) {
-                    for (const existActionName in this.actions) {
-                        const existAction = this.actions[existActionName]
-                        existAction.keyboard.keys = existAction.keyboard.keys.filter(oldkey => oldkey !== key)
-                    }
-                }
                 this.actions[actionName] = {
-                    keyboard: { keys: keys },
+                    keys: [...new Set(action.keys)],
                     enabled: action.enabled ?? true,
                     active: false
                 };
+                for (const plugin in this.plugins) {
+                    this.plugins[plugin].bindAction(actionName, this.actions[actionName], this.actions)
+                }
             }
-            console.log(this.actions)
         }
 
         // включить объявленную активность
@@ -155,6 +150,18 @@
             this.changeOnInput = changeOnInput
         }
 
+        bindAction(actionName, action, actions) {
+            for (const key of action.keys) {
+                for (const existActionName in actions) {
+                    if (existActionName === actionName) {
+                        continue
+                    }
+                    const existAction = actions[existActionName]
+                    existAction.keys = existAction.keys.filter(oldkey => oldkey !== key)
+                }
+            }
+        }
+
         attach(target) {
             this.target = target
             this.target.addEventListener("keydown", this.keyDownHandler)
@@ -169,13 +176,11 @@
         keyDownHandler(event) {
             this.pressedKey.add(event.keyCode)
             this.changeOnInput()
-            console.log("нажата:" + event.keyCode)
         }
 
         keyUpHandler(event) {
             this.pressedKey.delete(event.keyCode)
             this.changeOnInput()
-            console.log("отпущена:" + event.keyCode)
         }
 
         isKeyPressed(keyCode) {
@@ -183,12 +188,12 @@
         }
 
         isActionActive(action) {
-            const keys = action.keyboard.keys;
+            const keys = action.keys;
             return keys.some(key => this.isKeyPressed(key));
         }
 
         supportAction(action) {
-            return action.keyboard !== undefined
+            return action !== undefined
         }
 
         clear() {

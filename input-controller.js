@@ -3,7 +3,7 @@
         constructor(actionsToBind = {}, target = window) {
             this.actions = {}
             this.target = target
-            this.enabled = true
+            this._enabled = true
             this.focused = true
             this.bindActions(actionsToBind)
             this.focusHandler = this.focusHandler.bind(this)
@@ -45,37 +45,21 @@
         // включить объявленную активность
         enableAction(actionName) {
             const action = this.actions[actionName]
-            const currState = this.isActionActive(actionName)
-            if (action) {
-                action.enabled = true;
-                if (currState != action.active) {
-                    action.active = currState
-                    const event = new CustomEvent(this.ACTION_ACTIVATED, {
-                        detail: {
-                            action: actionName
-                        }
-                    })
-                    this.target.dispatchEvent(event)
-                }
+            if (!action) {
+                return
             }
+            action.enabled = true;
+            this.updateActionState(actionName)
         }
 
         // отключить объявленную активность
         disableAction(actionName) {
             const action = this.actions[actionName]
-            if (action) {
-                const wasActive = action.active
-                action.enabled = false;
-                action.active = false
-                if (wasActive) {
-                    const event = new CustomEvent(this.ACTION_DEACTIVATED, {
-                        detail: {
-                            action: actionName
-                        }
-                    })
-                    this.target.dispatchEvent(event)
-                }
+            if (!action) {
+                return
             }
+            action.enabled = false;
+            this.updateActionState(actionName)
         }
 
         // проверяет активирована ли переданная активность
@@ -121,27 +105,7 @@
         // проверяет изменилось ли состояние действия
         checkState() {
             for (const actionName in this.actions) {
-                const action = this.actions[actionName]
-                const currState = this.isActionActive(actionName)
-                if (currState != action.active) {
-                    action.active = currState
-                    if (currState) {
-                        const event = new CustomEvent(this.ACTION_ACTIVATED, {
-                            detail: {
-                                action: actionName
-                            }
-                        })
-                        this.target.dispatchEvent(event)
-                    }
-                    else {
-                        const event = new CustomEvent(this.ACTION_DEACTIVATED, {
-                            detail: {
-                                action: actionName
-                            }
-                        })
-                        this.target.dispatchEvent(event)
-                    }
-                }
+                this.updateActionState(actionName)
             }
         }
 
@@ -170,8 +134,46 @@
                 this.actions[actionName].active = false
             }
         }
-    }
 
+        get enabled() {
+            return this._enabled
+        }
+
+        set enabled(value) {
+            if (this._enabled === value) {
+                return
+            }
+            this._enabled = value
+            this.checkState()
+        }
+
+        updateActionState(actionName) {
+            const action = this.actions[actionName]
+            if (!action) {
+                return
+            }
+            const currState = this.isActionActive(actionName)
+            if (currState != action.active) {
+                action.active = currState
+                if (currState) {
+                    const event = new CustomEvent(this.ACTION_ACTIVATED, {
+                        detail: {
+                            action: actionName
+                        }
+                    })
+                    this.target.dispatchEvent(event)
+                }
+                else {
+                    const event = new CustomEvent(this.ACTION_DEACTIVATED, {
+                        detail: {
+                            action: actionName
+                        }
+                    })
+                    this.target.dispatchEvent(event)
+                }
+            }
+        }
+    }
     // плагин для клавиатуры
     class KeyboardPlug {
         constructor(target, changeOnInput) {

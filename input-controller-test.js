@@ -62,6 +62,12 @@ controller.target.addEventListener(controller.ACTION_DEACTIVATED, (event) => {
         player.style.background = "green"
     }
 })
+controller.target.addEventListener(controller.ACTION_DEACTIVATED, (event) => {
+    console.log("deactivated", event.detail.action)
+})
+controller.target.addEventListener(controller.ACTION_ACTIVATED, (event) => {
+    console.log("activated", event.detail.action)
+})
 leftEnableButton.addEventListener("click", () => controller.enableAction("left"))
 leftDisableButton.addEventListener("click", () => controller.disableAction("left"))
 attachButton.addEventListener("click", () => {

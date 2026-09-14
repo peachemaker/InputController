@@ -52,8 +52,17 @@
         // отключить объявленную активность
         disableAction(actionName) {
             if (this.actions[actionName]) {
+                const wasActive = action.active
                 this.actions[actionName].enabled = false;
                 this.actions[actionName].active = false
+                if (wasActive) {
+                    const event = new CustomEvent(this.ACTION_DEACTIVATED, {
+                        detail: {
+                            action: actionName
+                        }
+                    })
+                    this.target.dispatchEvent(event)
+                }
             }
         }
 

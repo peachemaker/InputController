@@ -4,6 +4,9 @@ const controller = new InputController({
     },
     right: {
         keys: [39, 68]
+    },
+    shoot: {
+        buttons: [0]
     }
 })
 const player = document.getElementById("player");
@@ -13,12 +16,14 @@ const attachButton = document.getElementById("attach")
 const detachButton = document.getElementById("detach")
 const statusLeft = document.getElementById("statusLeft")
 const statusRight = document.getElementById("statusRight")
+const statusDown = document.getElementById("statusDown")
 const arrowLeft = document.getElementById("arrowLeft")
 const arrowRight = document.getElementById("arrowRight")
 const pressedA = document.getElementById("pressedA")
 const pressedD = document.getElementById("pressedD")
 const addJumpButton = document.getElementById("addJump")
 const turnOffContButton = document.getElementById("turnoffcont")
+const pressedMouseButton = document.getElementById("pressedMouse")
 
 addJumpButton.addEventListener("click", () => {
     controller.bindActions({
@@ -29,6 +34,7 @@ addJumpButton.addEventListener("click", () => {
 })
 controller.attach(window)
 let playerX = 280
+let playerY = 30
 setInterval(() => {
     if (controller.isActionActive("left")) {
         playerX -= 5
@@ -36,13 +42,19 @@ setInterval(() => {
     if (controller.isActionActive("right")) {
         playerX += 5
     }
+    if (controller.isActionActive("shoot")) {
+        playerY += 5
+    }
     player.style.left = `${playerX}px`
+    player.style.top = `${playerY}px`
     statusLeft.textContent = controller.isActionActive("left")
     statusRight.textContent = controller.isActionActive("right")
+    statusDown.textContent = controller.isActionActive("shoot")
     arrowLeft.textContent = controller.isKeyPressed(37)
     arrowRight.textContent = controller.isKeyPressed(39)
     pressedA.textContent = controller.isKeyPressed(65)
     pressedD.textContent = controller.isKeyPressed(68)
+    pressedMouseButton.textContent = controller.isKeyPressed(0)
 }, 16)
 controller.target.addEventListener(controller.ACTION_ACTIVATED, (event) => {
     if (event.detail.action === "jump") {

@@ -13,6 +13,11 @@
                     if (this.enabled) {
                         this.checkState()
                     }
+                }),
+                mouse: new MousePlug(target, () => {
+                    if (this.enabled) {
+                        this.checkState()
+                    }
                 })
             }
             this.ACTION_ACTIVATED = "input-controller:action-activated"
@@ -25,6 +30,7 @@
                 const action = actionsToBind[actionName]
                 this.actions[actionName] = {
                     keys: [...new Set(action.keys)],
+                    buttons: [...new Set(action.buttons)],
                     enabled: action.enabled ?? true,
                     active: false
                 };
@@ -52,11 +58,15 @@
         // проверяет активирована ли переданная активность
         isActionActive(actionName) {
             const action = this.actions[actionName];
+            // console.log(this.plugins, actionName)
             if (!action || !action.enabled || !this.enabled) {
                 return false;
             }
             for (const plugin in this.plugins) {
+                console.log(this.plugins)
+                console.log(plugin, action)
                 if (this.plugins[plugin].supportAction(action)) {
+                    console.log(plugin)
                     return this.plugins[plugin].isActionActive(action)
                 }
             }
@@ -80,10 +90,13 @@
         }
 
         // проверяет нажата ли переданная кнопка
-        isKeyPressed(keyCode) {
+        isKeyPressed(input) {
             for (const plugin in this.plugins) {
-                return this.plugins[plugin].isKeyPressed(keyCode)
+                if (this.plugins[plugin].isKeyPressed(input)) {
+                    return true
+                }
             }
+            return false
         }
 
         // проверяет изменилось ли состояние действия
@@ -193,13 +206,80 @@
         }
 
         supportAction(action) {
-            return action !== undefined
+            // return action.keys !== undefined
+            return action.keys.length > 0
         }
 
         clear() {
             this.pressedKey.clear()
         }
     }
+
+    class MousePlug {
+        constructor(target, changeOnInput) {
+            this.target = target
+            this.pressedButton = new Set()
+            this.buttonDownHandler = this.buttonDownHandler.bind(this)
+            this.buttonUpHandler = this.buttonUpHandler.bind(this)
+            this.changeOnInput = changeOnInput
+        }
+
+        bindAction(actionName, action, actions) {
+            for (const button of action.buttons) {
+                for (const existActionName in actions) {
+                    if (existActionName === actionName) {
+                        continue
+                    }
+                    const existAction = actions[existActionName]
+                    existAction.buttons = existAction.buttons.filter(oldbutton => oldbutton !== button)
+                }
+            }
+        }
+
+        attach(target) {
+            this.target = target
+            this.target.addEventListener("mousedown", this.buttonDownHandler)
+            this.target.addEventListener("mouseup", this.buttonUpHandler)
+        }
+
+        detach() {
+            this.target.removeEventListener("mousedown", this.buttonDownHandler)
+            this.target.removeEventListener("mouseup", this.buttonUpHandler)
+        }
+
+        buttonDownHandler(event) {
+            this.pressedButton.add(event.button)
+            this.changeOnInput()
+            console.log("меня нажали")
+        }
+
+        buttonUpHandler(event) {
+            this.pressedButton.delete(event.button)
+            this.changeOnInput()
+            console.log("меня отпустили")
+        }
+
+        isKeyPressed(button) {
+            return this.pressedButton.has(button)
+        }
+
+        isActionActive(action) {
+            const buttons = action.buttons;
+            console.log("неа")
+            return buttons.some(button => this.isKeyPressed(button));
+        }
+
+        supportAction(action) {
+            // console.log('support')
+            // return action.buttons !== undefined
+            return action.buttons.length > 0
+        }
+
+        clear() {
+            this.pressedButton.clear()
+        }
+    }
+    window.MousePlug = MousePlug
     window.KeyboardPlug = KeyboardPlug
     window.InputController = InputController
 })();

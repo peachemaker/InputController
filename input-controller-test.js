@@ -1,16 +1,12 @@
 const controller = new InputController({
     left: {
-        keys: [37, 65]
-    },
-    right: {
-        keys: [39, 68]
-    },
-    up: {
+        keys: [37, 65],
         buttons: [0]
     },
-    down: {
+    right: {
+        keys: [39, 68],
         buttons: [2]
-    }
+    },
 })
 const player = document.getElementById("player");
 const leftEnableButton = document.getElementById("enable-left")
@@ -19,8 +15,6 @@ const attachButton = document.getElementById("attach")
 const detachButton = document.getElementById("detach")
 const statusLeft = document.getElementById("statusLeft")
 const statusRight = document.getElementById("statusRight")
-const statusDown = document.getElementById("statusDown")
-const statusUp = document.getElementById("statusUp")
 const arrowLeft = document.getElementById("arrowLeft")
 const arrowRight = document.getElementById("arrowRight")
 const pressedA = document.getElementById("pressedA")
@@ -47,18 +41,10 @@ setInterval(() => {
     if (controller.isActionActive("right")) {
         playerX += 5
     }
-    if (controller.isActionActive("down")) {
-        playerY += 5
-    }
-    if (controller.isActionActive("up")) {
-        playerY -= 5
-    }
     player.style.left = `${playerX}px`
     player.style.top = `${playerY}px`
     statusLeft.textContent = controller.isActionActive("left")
     statusRight.textContent = controller.isActionActive("right")
-    statusDown.textContent = controller.isActionActive("down")
-    statusUp.textContent = controller.isActionActive("up")
     arrowLeft.textContent = controller.isKeyPressed(37)
     arrowRight.textContent = controller.isKeyPressed(39)
     pressedA.textContent = controller.isKeyPressed(65)
@@ -94,11 +80,11 @@ turnOffContButton.addEventListener("click", () => {
     controller.enabled = !controller.enabled
 })
 
-window.addEventListener("blur", (event) => {
+window.addEventListener("blur", () => {
     console.log("blur")
 }
 )
-window.addEventListener("focus", (event) => {
+window.addEventListener("focus", () => {
     console.log("focus")
 }
 )

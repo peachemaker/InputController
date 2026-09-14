@@ -64,8 +64,8 @@
                 return false;
             }
             for (const plugin in this.plugins) {
-                if (this.plugins[plugin].supportAction(action)) {
-                    return this.plugins[plugin].isActionActive(action)
+                if (this.plugins[plugin].supportAction(action) && this.plugins[plugin].isActionActive(action)) {
+                    return true
                 }
             }
             return false
@@ -212,6 +212,7 @@
         }
     }
 
+    // плагин для мыши
     class MousePlug {
         constructor(target, changeOnInput) {
             this.target = target

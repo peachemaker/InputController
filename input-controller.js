@@ -44,17 +44,29 @@
 
         // включить объявленную активность
         enableAction(actionName) {
-            if (this.actions[actionName]) {
-                this.actions[actionName].enabled = true;
+            const action = this.actions[actionName]
+            const currState = this.isActionActive(actionName)
+            if (action) {
+                action.enabled = true;
+                if (currState != action.active) {
+                    action.active = currState
+                    const event = new CustomEvent(this.ACTION_ACTIVATED, {
+                        detail: {
+                            action: actionName
+                        }
+                    })
+                    this.target.dispatchEvent(event)
+                }
             }
         }
 
         // отключить объявленную активность
         disableAction(actionName) {
-            if (this.actions[actionName]) {
+            const action = this.actions[actionName]
+            if (action) {
                 const wasActive = action.active
-                this.actions[actionName].enabled = false;
-                this.actions[actionName].active = false
+                action.enabled = false;
+                action.active = false
                 if (wasActive) {
                     const event = new CustomEvent(this.ACTION_DEACTIVATED, {
                         detail: {

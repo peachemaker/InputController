@@ -29,6 +29,7 @@ const pressedMouseButtonCenter = document.getElementById("pressedMouseCenter")
 const pressedSpaceButton = document.getElementById("pressedSpace")
 let playerX = 280
 
+// добавление действия прыжка
 addJumpButton.addEventListener("click", () => {
     controller.bindActions({
         jump: {
@@ -38,6 +39,7 @@ addJumpButton.addEventListener("click", () => {
     })
 })
 
+// движение кубика и обновление отображения состояний
 setInterval(() => {
     if (controller.isActionActive("left")) {
         playerX -= 5
@@ -59,6 +61,7 @@ setInterval(() => {
     pressedSpaceButton.textContent = controller.isKeyPressed(32)
 }, 16)
 
+// логи активаций и деактиваций действий + индикатор прыжка кубика
 controller.target.addEventListener(controller.ACTION_ACTIVATED, (event) => {
     if (controller.isActionActive("jump") === true) {
         player.style.background = "red"
@@ -73,27 +76,31 @@ controller.target.addEventListener(controller.ACTION_DEACTIVATED, (event) => {
     console.log("deactivated", event.detail.action)
 })
 
+// отключение/включение действия перемещения влево
 leftEnableButton.addEventListener("click", () => controller.enableAction("left"))
 
 leftDisableButton.addEventListener("click", () => controller.disableAction("left"))
 
+// отключение/включение обработчика
 attachButton.addEventListener("click", () => {
     controller.attach(window)
-    turnOffContButton.textContent = "Выключить клавиатуру"
+    turnOffContButton.textContent = "Выключить контроллер"
 })
 
 detachButton.addEventListener("click", () => controller.detach())
 
+// отключение/включение контроллера
 turnOffContButton.addEventListener("click", () => {
     if (controller.enabled === false) {
-        turnOffContButton.textContent = "Выключить клавиатуру"
+        turnOffContButton.textContent = "Выключить контроллер"
     }
     else {
-        turnOffContButton.textContent = "Включить клавиатуру"
+        turnOffContButton.textContent = "Включить контроллер"
     }
     controller.enabled = !controller.enabled
 })
 
+// логи состояния фокуса
 window.addEventListener("blur", () => {
     console.log("blur")
 }

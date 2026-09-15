@@ -102,7 +102,7 @@
             return false
         }
 
-        // проверяет изменилось ли состояние действия
+        // проверяет состояние всех действий
         checkState() {
             for (const actionName in this.actions) {
                 this.updateActionState(actionName)
@@ -146,7 +146,8 @@
             this._enabled = value
             this.checkState()
         }
-
+        
+        // проверяет и обновляет состояние действия
         updateActionState(actionName) {
             const action = this.actions[actionName]
             if (!action) {

@@ -88,7 +88,7 @@
                 this.plugins[plugin].clear()
             }
             for (const actionName in this.actions) {
-                this.actions[actionName].active = false
+                this.updateActionState(actionName)
             }
         }
 
@@ -131,7 +131,7 @@
             window.removeEventListener("focus", this.focusHandler)
             window.removeEventListener("blur", this.blurHandler)
             for (const actionName in this.actions) {
-                this.actions[actionName].active = false
+                this.updateActionState(actionName)
             }
         }
 
